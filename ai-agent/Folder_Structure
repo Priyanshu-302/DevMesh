@@ -1,0 +1,42 @@
+ai-agent/
+├── src/
+│   ├── index.js                     → Public API: ingestCodebase() & runAgentPipeline(): [index.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/index.js)
+│   ├── config/
+│   │   ├── groqClient.js            → Groq API client config: [groqClient.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/config/groqClient.js)
+│   │   ├── vectorDbClient.js        → ChromaDB / Fallback wrapper: [vectorDbClient.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/config/vectorDbClient.js)
+│   │   └── retryConfig.js           → Backoff & throttling limits: [retryConfig.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/config/retryConfig.js)
+│   ├── graph/
+│   │   ├── agentGraph.js            → StateGraph assembly: [agentGraph.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/graph/agentGraph.js)
+│   │   ├── stateSchema.js           → Shared graph state schema: [stateSchema.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/graph/stateSchema.js)
+│   │   └── router.js                → Conditional routing (loop / end): [router.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/graph/router.js)
+│   ├── agents/
+│   │   ├── architectAgent.js        → Architect node logic: [architectAgent.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/agents/architectAgent.js)
+│   │   ├── developerAgent.js        → Developer node logic: [developerAgent.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/agents/developerAgent.js)
+│   │   └── qaTesterAgent.js         → QA Tester node logic: [qaTesterAgent.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/agents/qaTesterAgent.js)
+│   ├── prompts/
+│   │   ├── architectPrompt.js       → Architect persona prompts & JSON schema: [architectPrompt.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/prompts/architectPrompt.js)
+│   │   ├── developerPrompt.js       → Developer instructions & diff format: [developerPrompt.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/prompts/developerPrompt.js)
+│   │   └── qaPrompt.js              → QA tester prompts & evaluation criteria: [qaPrompt.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/prompts/qaPrompt.js)
+│   ├── rag/
+│   │   ├── ingestion/
+│   │   │   ├── fileParser.js        → Recursively reads/filters code files: [fileParser.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/rag/ingestion/fileParser.js)
+│   │   │   ├── chunker.js           → Class/function logical boundaries chunker: [chunker.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/rag/ingestion/chunker.js)
+│   │   │   └── embedder.js          → Dynamic local ONNX model embedder: [embedder.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/rag/ingestion/embedder.js)
+│   │   ├── retrieval/
+│   │   │   └── retriever.js         → Queries vector store for targeted chunks: [retriever.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/rag/retrieval/retriever.js)
+│   │   └── vectorStore/
+│   │       ├── chromaClient.js      → Chroma read/write with JSON fallback: [chromaClient.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/rag/vectorStore/chromaClient.js)
+│   │       └── pineconeClient.js    → Swappable Pinecone Client: [pineconeClient.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/rag/vectorStore/pineconeClient.js)
+│   ├── memory/
+│   │   ├── memoryManager.js         → Reads/writes codebase memory JSON file: [memoryManager.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/memory/memoryManager.js)
+│   │   ├── memoryUpdater.js         → Asks Groq for diff summaries & updates memory: [memoryUpdater.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/memory/memoryUpdater.js)
+│   │   └── fileHashTracker.js       → Monitors file hashes to avoid re-embedding: [fileHashTracker.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/memory/fileHashTracker.js)
+│   ├── reliability/
+│   │   ├── callWithRetry.js         → Groq wrapper for exponential backoff on 429: [callWithRetry.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/reliability/callWithRetry.js)
+│   │   └── throttle.js              → Turn-based throttle delay (e.g. 1 second): [throttle.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/reliability/throttle.js)
+│   └── utils/
+│       ├── eventTypes.js            → Consistent pipeline event types: [eventTypes.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/utils/eventTypes.js)
+│       └── logger.js                → Debug logger: [logger.js](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/src/utils/logger.js)
+├── .env.example                     → Template for workspace environment configs: [.env.example](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/.env.example)
+├── package.json                     → Package settings (strictly CommonJS): [package.json](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/package.json)
+└── README.md                        → Execution instructions: [README.md](file:///c:/Users/SANDIP/Downloads/Final_Year_Project/DevMesh/ai-agent/README.md)
