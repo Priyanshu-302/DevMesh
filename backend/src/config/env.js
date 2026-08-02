@@ -2,8 +2,8 @@ const dotenv = require("dotenv");
 const path = require("path");
 const { z } = require("zod");
 
-// Load the environment variables
-dotenv.config({ path: path.join(__dirname, "../../backend/.env") });
+// Load the environment variables (resolves to backend/.env)
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 // Define Validation Schema for environment variables
 const envSchema = z.object({
