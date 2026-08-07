@@ -40,7 +40,7 @@ export default function Navbar() {
 
         {/* User */}
         {user && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Link to="/profile" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
             <div style={{
               width: 28, height: 28, borderRadius: '50%',
               background: 'var(--orange)',
@@ -49,10 +49,12 @@ export default function Navbar() {
             }}>
               {(user.name || user.email || 'U')[0].toUpperCase()}
             </div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--steel)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--steel)', transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.target.style.color = 'var(--orange)'}
+                  onMouseLeave={e => e.target.style.color = 'var(--steel)'}>
               {user.name || user.email}
             </span>
-          </div>
+          </Link>
         )}
 
         <button

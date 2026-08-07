@@ -71,7 +71,61 @@ const getIngestionStatus = asyncHandler(async (req, res) => {
   });
 });
 
+const fs = require("fs");
+const path = require("path");
+
+/**
+ * Save file content in the workspace codebase
+ */
+const saveFileContent = asyncHandler(async (req, res) => {
+  const { id: workspaceId } = req.params;
+  const { filePath, content } = req.body;
+
+  if (!filePath || typeof content === "undefined") {
+    return errorResponse(res, 400, "filePath and content are required");
+  }
+
+  const workspace = await Workspace.findOne({
+    _id: workspaceId,
+    owner: req.user._id,
+  });
+
+  if (!workspace) {
+    return errorResponse(res, 404, "Workspace not found");
+  }
+
+  if (!workspace.codebasePath) {
+    return errorResponse(res, 400, "No codebase associated with this workspace");
+  }
+
+  // Resolve safe file path and prevent directory traversal
+  const resolvedPath = path.resolve(workspace.codebasePath, filePath);
+  if (!resolvedPath.startsWith(path.resolve(workspace.codebasePath))) {
+    return errorResponse(res, 403, "Access denied: Path traversal detected");
+  }
+
+  // Write file content
+  try {
+    fs.mkdirSync(path.dirname(resolvedPath), { recursive: true });
+    fs.writeFileSync(resolvedPath, content, "utf8");
+  } catch (err) {
+    return errorResponse(res, 500, "Failed to save file", err.message);
+  }
+
+  // Re-trigger ingestion pipeline to update vector search
+  try {
+    workspace.ingestionStatus = "extracted";
+    await workspace.save();
+    await codebaseIngestionService.triggerCodebaseIngestion(workspaceId);
+  } catch (err) {
+    console.error(`Failed to re-trigger ingestion after file edit: ${err.message}`);
+  }
+
+  return successResponse(res, 200, "File content saved and ingestion re-triggered successfully");
+});
+
 module.exports = {
   uploadCodebase,
   getIngestionStatus,
+  saveFileContent,
 };

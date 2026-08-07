@@ -21,4 +21,10 @@ router.get(
   codebaseController.getIngestionStatus,
 );
 
+// POST /api/workspaces/:id/codebase/file
+router.post(
+  "/workspaces/:id/codebase/file",
+  codebaseController.saveFileContent,
+);
+
 module.exports = router;

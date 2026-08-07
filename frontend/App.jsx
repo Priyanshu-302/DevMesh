@@ -9,6 +9,7 @@ import SignupPage      from './src/pages/SignupPAge';
 import DashboardPage   from './src/pages/DashboardPage';
 import WorkspacePage   from './src/pages/WorkspacePage';
 import LiveTaskPage    from './src/pages/LiveTaskPage';
+import ProfilePage     from './src/pages/ProfilePage';
 import Loader          from './src/components/common/Loader';
 import CommandPalette  from './src/components/common/CommandPalette';
 import HelpRobotChatbot from './src/components/common/HelpRobotChatbot';
@@ -27,7 +28,7 @@ function ProtectedLayout({ children }) {
 }
 
 /* ─── DEV ONLY: set true to skip auth and preview all pages ── */
-const DEV_BYPASS = true;
+const DEV_BYPASS = false;
 
 /* ─── Guard: redirect to /login if not authed ── */
 function ProtectedRoute({ children }) {
@@ -74,6 +75,10 @@ export default function App() {
         <Route
           path="/workspace/:workspaceId/task/:taskId"
           element={<ProtectedRoute><LiveTaskPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/profile"
+          element={<ProtectedRoute><ProfilePage /></ProtectedRoute>}
         />
 
         {/* Fallback */}

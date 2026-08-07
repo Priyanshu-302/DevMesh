@@ -29,7 +29,7 @@ export default function WorkspaceCard({ workspace, onDelete }) {
         <h3 className="font-display" style={{ fontSize: 15, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 0.5 }}>
           {workspace.name}
         </h3>
-        <StatusBadge status={workspace.codebaseStatus === 'ready' ? 'active' : 'idle'} />
+        <StatusBadge status={workspace.ingestionStatus === 'completed' ? 'active' : 'idle'} />
       </div>
 
       {workspace.description && (

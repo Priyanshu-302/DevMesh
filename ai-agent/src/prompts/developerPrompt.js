@@ -13,6 +13,12 @@ You must output your response in EXACT JSON format with the following keys:
   ]
 }
 Do not return any explanations, markdown code block backticks, or other text wrapper around the JSON.
+
+CRITICAL JSON COMPLIANCE RULES:
+1. Do NOT escape single quotes as \' (e.g., write "I'm" instead of "I\'m"). Escaping single quotes is invalid JSON string syntax.
+2. Properly escape all double quotes inside the code block as \" (e.g., write \"hello\" inside code literals, NOT "hello").
+3. Properly escape all backslashes inside the code block as \\\\ (e.g., write \\\\n instead of \n for newline symbols in string literals).
+4. Ensure the JSON envelope is syntactically valid and compiles perfectly.
 `;
 
 module.exports = {
