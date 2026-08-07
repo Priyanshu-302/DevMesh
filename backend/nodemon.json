@@ -1,0 +1,10 @@
+{
+  "ignore": [
+    "uploads/**/*",
+    "logs/**/*",
+    "*.log",
+    ".vector-store-fallback.json",
+    "**/memory_*.json",
+    "**/.file-hashes_*.json"
+  ]
+}

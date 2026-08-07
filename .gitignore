@@ -35,6 +35,15 @@ yarn-error.log*
 
 # Misc
 .DS_Store
-*.pem
-
 *.txt
+
+# DevMesh custom ignores
+backend/uploads/
+logs/
+**/logs/
+backend/.vector-store-fallback.json
+backend/src/test-ingestion-diag.js
+backend/src/test-e2e-ingestion.js
+backend/src/test-integration.js
+backend/test-codebase.zip
+*.zip
