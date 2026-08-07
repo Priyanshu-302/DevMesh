@@ -4,6 +4,7 @@ const env = require("./config/env");
 const connectDB = require("./config/db");
 const { initSocketServer } = require("./websocket/socketServer");
 const logger = require("./utils/logger");
+const { embedder } = require("../../ai-agent");
 
 /**
  * Connect to database and spin up server
@@ -24,6 +25,12 @@ const startServer = async () => {
     logger.info(
       `🚀 DevMesh Backend running in [${env.NODE_ENV}] mode on port ${PORT}`,
     );
+
+    // Pre-initialize ONNX embedder in the background
+    logger.info("🧠 Pre-initializing ONNX embedder model in background...");
+    embedder.initialize()
+      .then(() => logger.info("✅ ONNX embedder model pre-loaded successfully!"))
+      .catch((err) => logger.warn(`⚠️ Pre-loading ONNX model failed: ${err.message}`));
   });
 
   // Handle graceful process shutdowns

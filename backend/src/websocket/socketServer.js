@@ -25,7 +25,7 @@ const initSocketServer = (server) => {
   // Connection handshake middleware
   io.use(async (socket, next) => {
     try {
-      const token =
+      let token =
         socket.handshake.auth?.token ||
         socket.handshake.headers?.authorization ||
         socket.handshake.query?.token;

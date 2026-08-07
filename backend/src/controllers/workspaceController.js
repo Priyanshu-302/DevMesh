@@ -62,7 +62,7 @@ const updateWorkspace = asyncHandler(async (req, res) => {
 
   const workspace = await Workspace.findOneAndUpdate(
     {
-      _id: req.params._id,
+      _id: req.params.id,
       owner: req.user._id,
     },
     { name },

@@ -66,8 +66,10 @@ const createAndExecuteTask = async (workspaceId, requestText) => {
           // Update task data
           if (eventType === "task_completed") {
             task.status = "completed";
-            task.finalCode = payload.finalCode || payload.data?.finalCode || "";
-            task.testSuite = payload.testSuite || payload.data?.testSuite || "";
+            const finalCodeVal = payload.finalCode || payload.data?.finalCode || "";
+            task.finalCode = typeof finalCodeVal === "object" ? JSON.stringify(finalCodeVal, null, 2) : finalCodeVal;
+            const testSuiteVal = payload.testSuite || payload.data?.testSuite || "";
+            task.testSuite = typeof testSuiteVal === "object" ? JSON.stringify(testSuiteVal, null, 2) : testSuiteVal;
             await task.save();
           } else if (eventType === "task_failed") {
             task.status = "failed";
@@ -106,7 +108,7 @@ const createAndExecuteTask = async (workspaceId, requestText) => {
  */
 const getTaskById = async (taskId) => {
   // Find the task
-  const task = await Task.findById(taskId);
+  const task = await Task.findById(taskId).populate("workspace");
   if (!task) {
     const error = new Error("Task not found");
     error.statusCode = 404;

@@ -1,5 +1,6 @@
 const { createLogger, format, transports } = require("winston");
 const env = require("../config/env");
+const path = require("path");
 
 // Format logs for readable terminal/stdout printing
 const customConsoleFormat = format.printf(
@@ -18,6 +19,10 @@ const logger = createLogger({
   transports: [
     new transports.Console({
       format: format.combine(format.colorize(), customConsoleFormat),
+    }),
+    new transports.File({
+      filename: path.join(__dirname, "../../logs/app.log"),
+      level: "debug",
     }),
   ],
 });

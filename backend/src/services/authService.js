@@ -11,7 +11,7 @@ const generateToken = (id) => {
 };
 
 // Register a user
-const register = async ({ name, email, password }) => {
+const signup = async ({ name, email, password }) => {
   if (!name || !email || !password) {
     throw new Error("All fields are required");
   }
@@ -83,7 +83,7 @@ const logout = async (token) => {
 };
 
 module.exports = {
-  register,
+  signup,
   login,
   logout,
 };

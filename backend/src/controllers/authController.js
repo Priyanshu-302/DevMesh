@@ -8,7 +8,7 @@ const { successResponse } = require("../utils/apiResponse");
 const signup = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  const result = await authService.register({ name, email, password });
+  const result = await authService.signup({ name, email, password });
   return successResponse(res, 201, "User registered successfully", result);
 });
 
