@@ -17,7 +17,7 @@ export function registerUnauthorizedHandler(handler) {
 }
 
 axiosClient.interceptors.response.use(
-  (res) => res,
+  (res) => res.data,
   (err) => {
     if (err.response?.status === 401) onUnauthorized();
     return Promise.reject(err);

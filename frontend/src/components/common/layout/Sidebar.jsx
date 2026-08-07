@@ -3,6 +3,7 @@ import { ROUTES } from '../../../utils/constants';
 
 const NAV_ITEMS = [
   { label: 'Dashboard',  path: '/dashboard',  icon: '▦' },
+  { label: 'Profile',    path: '/profile',    icon: '👤' },
 ];
 
 export default function Sidebar() {

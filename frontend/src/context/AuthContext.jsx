@@ -21,9 +21,21 @@ export function AuthProvider({ children }) {
   useEffect(() => { registerUnauthorizedHandler(logout); }, [logout]);
 
   useEffect(() => {
-    if (token) { /* TODO: restore user from token */ }
-    setLoading(false);
-  }, [token]);
+    if (token) {
+      setLoading(true);
+      authApi.getProfile()
+        .then(res => {
+          setUser(res.data);
+        })
+        .catch(err => {
+          console.error("Failed to restore user from token:", err);
+          logout();
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [token, logout]);
 
   const login = async (credentials) => {
     const { data } = await authApi.login(credentials);
@@ -42,7 +54,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, setUser, token, loading, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -29,7 +29,7 @@ export default function WorkspacePage() {
       ]);
       setWorkspace(wsRes.data);
       setTasks(tasksRes.data);
-      setCodebaseStatus(cbRes.data?.status);
+      setCodebaseStatus(cbRes.data?.ingestionStatus);
     } catch (err) {
       setError(err?.response?.data?.message || err?.message || 'Failed to load workspace.');
     } finally {
@@ -39,6 +39,25 @@ export default function WorkspacePage() {
 
 
   useEffect(() => { load(); }, [id]);
+
+  useEffect(() => {
+    if (codebaseStatus !== 'ingesting') return;
+
+    const interval = setInterval(async () => {
+      try {
+        const cbRes = await codebaseApi.getStatus(id);
+        const newStatus = cbRes.data?.ingestionStatus;
+        if (newStatus && newStatus !== 'ingesting') {
+          clearInterval(interval);
+          load();
+        }
+      } catch (err) {
+        console.error('Failed to poll codebase status:', err);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [codebaseStatus, id]);
 
   if (loading) return <div className="page-content"><Loader label="Loading workspace…" /></div>;
   if (error) return <div className="page-content" style={{ fontFamily:'var(--font-mono)', color:'var(--red)' }}>⚠ {error}</div>;
@@ -63,13 +82,13 @@ export default function WorkspacePage() {
           <h1 className="font-display" style={{ fontSize:26, fontWeight:800, textTransform:'uppercase' }}>
             {workspace.name}
           </h1>
-          <StatusBadge status={codebaseStatus === 'ready' ? 'active' : 'idle'} />
+          <StatusBadge status={codebaseStatus === 'completed' ? 'active' : 'idle'} />
         </div>
         {workspace.description && (
           <p style={{ color:'var(--muted)', fontSize:14, marginTop:8 }}>{workspace.description}</p>
         )}
         <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--muted)', marginTop:8 }}>
-          Codebase: <span style={{ color: codebaseStatus === 'ready' ? 'var(--green)' : 'var(--yellow)' }}>
+          Codebase: <span style={{ color: codebaseStatus === 'completed' ? 'var(--green)' : 'var(--yellow)' }}>
             {codebaseStatus || 'not uploaded'}
           </span>
         </div>
@@ -104,7 +123,7 @@ export default function WorkspacePage() {
           <h2 className="font-display" style={{ fontSize:14, fontWeight:800, textTransform:'uppercase', marginBottom:20 }}>
             New Agent Task
           </h2>
-          {codebaseStatus !== 'ready' ? (
+          {codebaseStatus !== 'completed' ? (
             <p style={{ fontFamily:'var(--font-mono)', fontSize:12, color:'var(--yellow)' }}>
               ⚠ Please upload your codebase first before running agents.
             </p>
@@ -139,8 +158,8 @@ export default function WorkspacePage() {
                     onMouseLeave={e => { e.currentTarget.style.borderLeftColor='var(--panel-border)'; e.currentTarget.style.boxShadow=''; }}
                   >
                     <div>
-                      <div className="font-display" style={{ fontSize:13, fontWeight:700, textTransform:'uppercase', marginBottom:4 }}>
-                        {task.title}
+                      <div className="font-display" style={{ fontSize:13, fontWeight:700, textTransform:'uppercase', marginBottom:4, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                        {task.requestText ? (task.requestText.length > 60 ? task.requestText.substring(0, 57) + '...' : task.requestText) : 'Task'}
                       </div>
                       <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--muted)' }}>
                         {timeAgo(task.createdAt)}
