@@ -7,4 +7,6 @@ export const codebaseApi = {
     }),
   getStatus: (workspaceId) =>
     axiosClient.get(`/api/workspaces/${workspaceId}/codebase/status`),
+  saveFileContent: (workspaceId, filePath, content) =>
+    axiosClient.post(`/api/workspaces/${workspaceId}/codebase/file`, { filePath, content }),
 };

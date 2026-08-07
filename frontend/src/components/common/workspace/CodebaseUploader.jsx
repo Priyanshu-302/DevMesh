@@ -21,7 +21,7 @@ export default function CodebaseUploader({ workspaceId, onUploaded }) {
     setUploading(true); setError(null);
     try {
       const fd = new FormData();
-      fd.append('codebase', file);
+      fd.append('zipFile', file);
       await codebaseApi.upload(workspaceId, fd);
       onUploaded?.();
     } catch {
