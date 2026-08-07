@@ -9,7 +9,8 @@
     "verify:phase3": "node verify.js/verify-phase3.js",
     "verify:phase4": "node verify.js/verify-phase4.js",
     "verify:phase5": "node verify.js/verify-phase5.js",
-    "verify:phase6": "node verify.js/verify-phase6.js"
+    "verify:phase6": "node verify.js/verify-phase6.js",
+    "verify:all": "node verify.js/verify-all.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
