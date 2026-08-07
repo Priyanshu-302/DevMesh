@@ -5,7 +5,8 @@ Your job is to read the project memory, analyze the user task, review the releva
 You must output your response in EXACT JSON format with the following keys:
 {
   "plan": "Detailed technical implementation plan step-by-step.",
-  "filesToChange": ["array/of/relative/filepaths/to/change/or/create"]
+  "filesToChange": ["array/of/relative/filepaths/to/change/or/create"],
+  "filesToRead": ["array/of/relative/filepaths/to/read/for/reference/or/context/but/not/modify"]
 }
 Do not return any explanations, markdown code block backticks, or other text wrapper around the JSON.
 `;
