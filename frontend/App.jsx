@@ -11,6 +11,7 @@ import WorkspacePage   from './src/pages/WorkspacePage';
 import LiveTaskPage    from './src/pages/LiveTaskPage';
 import Loader          from './src/components/common/Loader';
 import CommandPalette  from './src/components/common/CommandPalette';
+import HelpRobotChatbot from './src/components/common/HelpRobotChatbot';
 
 /* ─── Protected layout (Sidebar + Navbar) ── */
 function ProtectedLayout({ children }) {
@@ -79,6 +80,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <CommandPalette />
+      <HelpRobotChatbot />
     </>
   );
 }

@@ -9,44 +9,18 @@ import StatusBadge from '../components/common/StatusBadge';
 import Loader from '../components/common/Loader';
 import { formatDateTime, timeAgo } from '../utils/formatDate';
 
-/* ── Dev mock workspace & tasks (used when no backend is running) ── */
-const DEV_MOCK_WS_DATA = {
-  _id: 'demo-workspace-1',
-  name: 'DevMesh Auth & Session Microservice',
-  description: 'Node.js & TypeScript authentication module with JWT session management.',
-  codebaseStatus: 'ready',
-};
-const DEV_MOCK_TASKS_LIST = [
-  {
-    _id: 'demo-task-1',
-    title: 'Add JWT Refresh Token Endpoint',
-    status: 'completed',
-    createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-  },
-  {
-    _id: 'demo-task-2',
-    title: 'Implement Session Validation Middleware',
-    status: 'completed',
-    createdAt: new Date(Date.now() - 3600000 * 18).toISOString(),
-  },
-  {
-    _id: 'demo-task-3',
-    title: 'Fix Null Check Exception in Auth Handler',
-    status: 'failed',
-    createdAt: new Date(Date.now() - 3600000 * 36).toISOString(),
-  },
-];
-
 export default function WorkspacePage() {
   const { id } = useParams();
   const [workspace, setWorkspace]     = useState(null);
   const [tasks, setTasks]             = useState([]);
   const [codebaseStatus, setCodebaseStatus] = useState(null);
   const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState(null);
   const [tab, setTab]                 = useState('tasks'); // 'tasks' | 'upload' | 'new-task'
 
   const load = async () => {
     setLoading(true);
+    setError(null);
     try {
       const [wsRes, tasksRes, cbRes] = await Promise.all([
         workspaceApi.getById(id),
@@ -56,11 +30,8 @@ export default function WorkspacePage() {
       setWorkspace(wsRes.data);
       setTasks(tasksRes.data);
       setCodebaseStatus(cbRes.data?.status);
-    } catch {
-      // Fallback to dev mock workspace data when backend is offline
-      setWorkspace(DEV_MOCK_WS_DATA);
-      setTasks(DEV_MOCK_TASKS_LIST);
-      setCodebaseStatus('ready');
+    } catch (err) {
+      setError(err?.response?.data?.message || err?.message || 'Failed to load workspace.');
     } finally {
       setLoading(false);
     }
@@ -70,6 +41,7 @@ export default function WorkspacePage() {
   useEffect(() => { load(); }, [id]);
 
   if (loading) return <div className="page-content"><Loader label="Loading workspace…" /></div>;
+  if (error) return <div className="page-content" style={{ fontFamily:'var(--font-mono)', color:'var(--red)' }}>⚠ {error}</div>;
   if (!workspace) return <div className="page-content" style={{ fontFamily:'var(--font-mono)', color:'var(--red)' }}>Workspace not found.</div>;
 
   const TABS = [
