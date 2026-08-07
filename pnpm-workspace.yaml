@@ -3,3 +3,10 @@ packages:
   - "backend"
   - "ai-agent"
   - "packages/*"
+
+allowBuilds:
+  protobufjs: true
+  sharp: true
+  "@xenova/transformers": true
+  onnxruntime-node: true
+

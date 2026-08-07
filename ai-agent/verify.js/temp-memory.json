@@ -1,0 +1,8 @@
+{
+  "projectSummary": "Test Project Summary",
+  "fileSummaries": {
+    "src/index.js": "Core public api interface file"
+  },
+  "technologies": [],
+  "lastUpdated": "2026-08-04T16:14:09.641Z"
+}

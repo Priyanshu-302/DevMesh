@@ -1,0 +1,6 @@
+module.exports = {
+  MAX_RETRIES: 5,
+  INITIAL_DELAY_MS: 2000,
+  MAX_DELAY_MS: 30000,
+  THROTTLE_DELAY_MS: 1000
+};
