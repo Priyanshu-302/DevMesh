@@ -6,10 +6,11 @@ const { successResponse, errorResponse } = require("../utils/apiResponse");
  * Create a new workspace
  */
 const createWorkspace = asyncHandler(async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
 
   const workspace = await Workspace.create({
     name,
+    description,
     owner: req.user._id,
     ingestionStatus: "none",
   });
@@ -58,14 +59,14 @@ const getWorkspaceById = asyncHandler(async (req, res) => {
  * Update workspace's details
  */
 const updateWorkspace = asyncHandler(async (req, res) => {
-  const { name } = req.body;
+  const { name, description } = req.body;
 
   const workspace = await Workspace.findOneAndUpdate(
     {
       _id: req.params.id,
       owner: req.user._id,
     },
-    { name },
+    { name, description },
     { new: true, runValidators: true },
   );
 
