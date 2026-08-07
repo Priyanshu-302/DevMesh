@@ -59,13 +59,14 @@ ${retrievedCodeContext}
     if (state.onEvent) {
       state.onEvent({
         type: 'architect_plan',
-        data: { plan: result.plan, filesToChange: result.filesToChange }
+        data: { plan: result.plan, filesToChange: result.filesToChange, filesToRead: result.filesToRead || [] }
       });
     }
 
     return {
       plan: result.plan,
-      filesToChange: result.filesToChange
+      filesToChange: result.filesToChange,
+      filesToRead: result.filesToRead || []
     };
   } catch (error) {
     logger.error(EVENT_TYPES.ARCHITECT_FAIL, `Architect failed: ${error.message}`);

@@ -7,13 +7,44 @@ const path = require('path');
 
 // Simple line-by-line diff generator
 function simpleDiff(oldStr, newStr) {
-  if (!oldStr) return `+ (New File Content Added)`;
+  if (!oldStr) {
+    // For new files, output the entire content as additions
+    return newStr.split('\n').map(line => `+ ${line}`).join('\n');
+  }
+
   const oldLines = oldStr.split('\n');
   const newLines = newStr.split('\n');
   let diff = '';
-  diff += `Original length: ${oldLines.length} lines, New length: ${newLines.length} lines.\n`;
-  diff += `Showing new contents:\n${newStr.substring(0, 300)}...`;
-  return diff;
+  
+  let i = 0, j = 0;
+  while (i < oldLines.length || j < newLines.length) {
+    if (i < oldLines.length && j < newLines.length) {
+      if (oldLines[i] === newLines[j]) {
+        diff += `  ${oldLines[i]}\n`;
+        i++; j++;
+      } else {
+        // Lookahead to check if the old line matches a later line in the new file (indicating additions)
+        const nextMatch = newLines.indexOf(oldLines[i], j);
+        if (nextMatch !== -1 && nextMatch - j < 10) {
+          while (j < nextMatch) {
+            diff += `+ ${newLines[j]}\n`;
+            j++;
+          }
+        } else {
+          // Line was deleted or modified
+          diff += `- ${oldLines[i]}\n`;
+          i++;
+        }
+      }
+    } else if (i < oldLines.length) {
+      diff += `- ${oldLines[i]}\n`;
+      i++;
+    } else if (j < newLines.length) {
+      diff += `+ ${newLines[j]}\n`;
+      j++;
+    }
+  }
+  return diff.trimEnd();
 }
 
 async function developerAgent(state) {
@@ -23,9 +54,11 @@ async function developerAgent(state) {
     state.onEvent({ type: 'developer_started' });
   }
 
-  // Retrieve current code for files to change
+  // Combine files to change and files to read for reference
   const currentCode = { ...state.currentCode };
-  for (const filePath of state.filesToChange) {
+  const allFilesToLoad = Array.from(new Set([...state.filesToChange, ...(state.filesToRead || [])]));
+  
+  for (const filePath of allFilesToLoad) {
     if (!currentCode[filePath]) {
       const fullPath = path.resolve(state.codebasePath || process.cwd(), filePath);
       if (fs.existsSync(fullPath)) {
@@ -36,8 +69,15 @@ async function developerAgent(state) {
     }
   }
 
-  const fileContext = Object.entries(currentCode)
-    .map(([filePath, content]) => `File: ${filePath}\nCurrent Contents:\n${content}`)
+  // Files targeted for editing or creation
+  const fileContext = state.filesToChange
+    .map(filePath => `File: ${filePath}\nCurrent Contents:\n${currentCode[filePath] || ''}`)
+    .join('\n\n---\n\n');
+
+  // Files provided purely for context / reference (read-only)
+  const referenceContext = (state.filesToRead || [])
+    .filter(filePath => !state.filesToChange.includes(filePath)) // avoid duplicate display
+    .map(filePath => `File (Reference Only): ${filePath}\nContents:\n${currentCode[filePath] || ''}`)
     .join('\n\n---\n\n');
 
   const userPrompt = `
@@ -45,11 +85,13 @@ Task: "${state.requestText}"
 Technical Plan:
 ${state.plan}
 
-Files to Modify:
+Files to Modify/Create:
 ${state.filesToChange.join(', ')}
 
-Current Code for Files:
+Current Code for Files to Modify/Create:
 ${fileContext}
+
+${referenceContext ? `Reference Files Context (Read-only):\n${referenceContext}` : ''}
 
 ${state.qaFeedback ? `Previous QA Feedback to Address:\n${state.qaFeedback}` : ''}
 `;

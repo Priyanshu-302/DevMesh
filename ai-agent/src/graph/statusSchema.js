@@ -6,6 +6,7 @@ function createInitialState(task, codebaseContext = {}, memory = {}) {
     codebasePath: task.codebasePath || '',
     plan: '',
     filesToChange: [],
+    filesToRead: [],
     currentCode: codebaseContext.currentCode || {},
     qaFeedback: '',
     passed: false,
