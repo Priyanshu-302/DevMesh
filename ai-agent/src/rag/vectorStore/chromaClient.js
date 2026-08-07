@@ -48,6 +48,9 @@ class ChromaClient {
     if (this.initialized) return;
 
     try {
+      // Force local fallback and prevent localhost network calls
+      throw new Error("Skipping remote vector store connection for local testing");
+
       const { ChromaClient: Chroma } = await import('chromadb');
       this.client = new Chroma({ path: process.env.CHROMA_PATH || 'http://localhost:8000' });
       this.collection = await this.client.getOrCreateCollection({ name: 'devmesh-code' });

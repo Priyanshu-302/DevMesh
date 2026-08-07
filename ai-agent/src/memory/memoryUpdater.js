@@ -9,6 +9,14 @@ class MemoryUpdater {
   async updateFileMemory(relativePath, newContent, diff = '') {
     logger.info('MEMORY_UPDATE_START', `Generating summary for: ${relativePath}`);
 
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey || apiKey === 'your_groq_api_key_here' || apiKey === 'mock-api-key' || apiKey.startsWith('your_')) {
+      logger.info('MEMORY_UPDATE_SKIP', `Using mock file summary for: ${relativePath}`);
+      this.memoryManager.updateFileSummary(relativePath, `Mock summary of file implementation for ${relativePath}`);
+      this.memoryManager.saveMemory();
+      return;
+    }
+
     const prompt = `
 You are an expert developer reviewing a codebase change.
 Please write a concise 1-2 sentence summary explaining the purpose and implementation of this file: "${relativePath}".
@@ -40,6 +48,15 @@ Provide only the plain text summary, do not include code formatting, Markdown ta
 
   async updateProjectSummary() {
     logger.info('MEMORY_PROJECT_UPDATE_START', 'Updating project summary...');
+
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey || apiKey === 'your_groq_api_key_here' || apiKey === 'mock-api-key' || apiKey.startsWith('your_')) {
+      logger.info('MEMORY_PROJECT_UPDATE_SKIP', 'Using mock project summary.');
+      this.memoryManager.updateProjectSummary("Mock project description detailing architecture and codebase capabilities.");
+      this.memoryManager.saveMemory();
+      return;
+    }
+
     const memory = this.memoryManager.getMemory();
     const filesList = Object.entries(memory.fileSummaries)
       .map(([file, summary]) => `- ${file}: ${summary}`)
