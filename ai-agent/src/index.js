@@ -187,5 +187,6 @@ ${content}
 
 module.exports = {
   ingestCodebase,
-  runAgentPipeline
+  runAgentPipeline,
+  embedder
 };
