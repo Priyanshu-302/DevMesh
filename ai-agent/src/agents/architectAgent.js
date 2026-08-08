@@ -18,7 +18,7 @@ async function architectAgent(state) {
   const projectSummary = memory.projectSummary || 'No summary available.';
 
   // Retrieve top-K chunks from vector store using request text
-  const chunks = await retrieveContext(state.requestText, 5);
+  const chunks = await retrieveContext(state.requestText, state.workspaceId, 5);
   const retrievedCodeContext = chunks.map(c => `File: ${c.filePath}\nLines: ${c.startLine}-${c.endLine}\nContent:\n${c.content}`).join('\n\n---\n\n');
 
   const userPrompt = `

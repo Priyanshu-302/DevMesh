@@ -71,7 +71,7 @@ class ChromaClient {
         const ids = chunks.map(c => c.id);
         const embeddings = chunks.map(c => c.embedding);
         const documents = chunks.map(c => c.content);
-        const metadatas = chunks.map(c => ({ filePath: c.filePath, startLine: c.startLine, endLine: c.endLine }));
+        const metadatas = chunks.map(c => ({ filePath: c.filePath, startLine: c.startLine, endLine: c.endLine, workspaceId: c.workspaceId }));
 
         await this.collection.add({ ids, embeddings, documents, metadatas });
         logger.info('CHROMA_ADD_SUCCESS', `Added ${chunks.length} chunks to ChromaDB.`);
@@ -93,14 +93,15 @@ class ChromaClient {
     logger.info('CHROMA_FALLBACK_ADD_SUCCESS', `Saved ${chunks.length} chunks in local fallback vector JSON file.`);
   }
 
-  async query(queryVector, limit = 5) {
+  async query(queryVector, workspaceId = null, limit = 5) {
     await this.initialize();
 
     if (this.client && this.collection) {
       try {
         const queryResults = await this.collection.query({
           queryEmbeddings: [queryVector],
-          nResults: limit
+          nResults: limit,
+          where: workspaceId ? { workspaceId } : undefined
         });
 
         if (queryResults && queryResults.documents && queryResults.documents[0]) {
@@ -110,6 +111,7 @@ class ChromaClient {
             filePath: queryResults.metadatas[0][idx].filePath,
             startLine: queryResults.metadatas[0][idx].startLine,
             endLine: queryResults.metadatas[0][idx].endLine,
+            workspaceId: queryResults.metadatas[0][idx].workspaceId,
             score: queryResults.distances ? queryResults.distances[0][idx] : 1.0
           }));
         }
@@ -118,7 +120,12 @@ class ChromaClient {
       }
     }
 
-    const scoredChunks = this.fallbackDatabase
+    let filteredDatabase = this.fallbackDatabase;
+    if (workspaceId) {
+      filteredDatabase = this.fallbackDatabase.filter(c => c.workspaceId === workspaceId);
+    }
+
+    const scoredChunks = filteredDatabase
       .map(chunk => {
         const score = cosineSimilarity(queryVector, chunk.embedding || []);
         return { ...chunk, score };
