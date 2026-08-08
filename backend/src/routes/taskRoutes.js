@@ -25,6 +25,13 @@ router.post(
   taskController.createTask,
 );
 
+// POST /api/tasks/:taskId/followup
+router.post(
+  "/tasks/:taskId/followup",
+  validateRequest(createTaskSchema),
+  taskController.createFollowUp,
+);
+
 // GET /api/workspaces/:id/tasks
 router.get("/workspaces/:id/tasks", taskController.getTasks);
 

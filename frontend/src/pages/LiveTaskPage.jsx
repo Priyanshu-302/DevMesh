@@ -108,11 +108,10 @@ export default function LiveTaskPage() {
     if (!followUpPrompt.trim()) return;
     setSubmittingFollowUp(true); setFollowUpError(null);
     try {
-      const { data } = await taskApi.create(workspaceId, {
-        requestText: followUpPrompt,
-        parentTaskId: taskId
+      const { data } = await taskApi.createFollowUp(taskId, {
+        requestText: followUpPrompt
       });
-      navigate(`/workspace/${workspaceId}/task/${data._id}`);
+      setTask(data.data || data);
       setFollowUpPrompt('');
     } catch (err) {
       setFollowUpError(err?.response?.data?.message || err?.message || 'Failed to dispatch follow-up command.');

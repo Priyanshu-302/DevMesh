@@ -5,4 +5,5 @@ export const taskApi = {
   getById:          (taskId)               => axiosClient.get(`/api/tasks/${taskId}`),
   listForWorkspace: (workspaceId)          => axiosClient.get(`/api/workspaces/${workspaceId}/tasks`),
   getLogs:          (taskId)               => axiosClient.get(`/api/tasks/${taskId}/logs`),
+  createFollowUp:   (taskId, payload)      => axiosClient.post(`/api/tasks/${taskId}/followup`, payload),
 };

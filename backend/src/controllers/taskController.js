@@ -101,9 +101,40 @@ const getTaskLogs = asyncHandler(async (req, res) => {
   );
 });
 
+/**
+ * Handle follow-up command on an existing task
+ */
+const createFollowUp = asyncHandler(async (req, res) => {
+  const { taskId } = req.params;
+  const { requestText } = req.body;
+
+  const existingTask = await Task.findById(taskId).populate("workspace");
+  if (!existingTask) {
+    return errorResponse(res, 404, "Task not found");
+  }
+
+  if (existingTask.workspace.owner.toString() !== req.user._id.toString()) {
+    return errorResponse(
+      res,
+      403,
+      "Forbidden: You do not own the workspace corresponding to this task",
+    );
+  }
+
+  const task = await taskService.executeFollowUpTask(taskId, requestText);
+
+  return successResponse(
+    res,
+    200,
+    "Follow-up task pipeline triggered successfully",
+    task,
+  );
+});
+
 module.exports = {
   createTask,
   getTasks,
   getTaskById,
   getTaskLogs,
+  createFollowUp,
 };
