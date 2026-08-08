@@ -9,7 +9,7 @@ const { successResponse, errorResponse } = require("../utils/apiResponse");
  */
 const createTask = asyncHandler(async (req, res) => {
   const { id: workspaceId } = req.params;
-  const { requestText } = req.body;
+  const { requestText, parentTaskId } = req.body;
 
   const workspace = await Workspace.findOne({
     _id: workspaceId,
@@ -21,7 +21,7 @@ const createTask = asyncHandler(async (req, res) => {
   }
 
   // run bg piplines
-  const task = await taskService.createAndExecuteTask(workspaceId, requestText);
+  const task = await taskService.createAndExecuteTask(workspaceId, requestText, parentTaskId);
 
   return successResponse(
     res,

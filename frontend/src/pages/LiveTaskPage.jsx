@@ -108,7 +108,10 @@ export default function LiveTaskPage() {
     if (!followUpPrompt.trim()) return;
     setSubmittingFollowUp(true); setFollowUpError(null);
     try {
-      const { data } = await taskApi.create(workspaceId, { requestText: followUpPrompt });
+      const { data } = await taskApi.create(workspaceId, {
+        requestText: followUpPrompt,
+        parentTaskId: taskId
+      });
       navigate(`/workspace/${workspaceId}/task/${data._id}`);
       setFollowUpPrompt('');
     } catch (err) {

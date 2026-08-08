@@ -11,6 +11,7 @@ const createTaskSchema = z.object({
   requestText: z
     .string()
     .min(5, "Task request text must be at least 5 characters long"),
+  parentTaskId: z.string().optional(),
 });
 
 // Protect all task endpoints

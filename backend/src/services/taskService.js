@@ -9,7 +9,7 @@ const { broadcastToTaskRoom } = require("../websocket/socketServer");
  * Create and Execute Task
  * If the status is completed the trigger the new AI pipeline
  */
-const createAndExecuteTask = async (workspaceId, requestText) => {
+const createAndExecuteTask = async (workspaceId, requestText, parentTaskId = null) => {
   // Find the workspace
   const workspace = await Workspace.findById(workspaceId);
   if (!workspace) {
@@ -32,6 +32,7 @@ const createAndExecuteTask = async (workspaceId, requestText) => {
     workspace: workspaceId,
     requestText,
     status: "pending",
+    parentTask: parentTaskId || null,
   });
 
   // Execute agent pipeline asynchronously
@@ -42,11 +43,26 @@ const createAndExecuteTask = async (workspaceId, requestText) => {
 
       logger.info(`Running agent pipeline for Task ${task._id}...`);
 
+      let agentRequestText = task.requestText;
+      if (parentTaskId) {
+        try {
+          const parentTask = await Task.findById(parentTaskId);
+          if (parentTask) {
+            agentRequestText = `Context from previous conversation/task:\n` +
+              `- Previous prompt: "${parentTask.requestText}"\n` +
+              `- Previous status: completed\n\n` +
+              `Current follow-up instruction to implement now:\n"${task.requestText}"`;
+          }
+        } catch (err) {
+          logger.warn(`Failed to retrieve parent task ${parentTaskId} context: ${err.message}`);
+        }
+      }
+
       await aiAgent.runAgentPipeline(
         {
           taskId: task._id.toString(),
           workspaceId: workspace._id.toString(),
-          requestText: task.requestText,
+          requestText: agentRequestText,
           codebasePath: workspace.codebasePath,
         },
         async (event) => {
