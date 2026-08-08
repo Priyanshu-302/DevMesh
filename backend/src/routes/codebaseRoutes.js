@@ -27,4 +27,10 @@ router.post(
   codebaseController.saveFileContent,
 );
 
+// GET /api/workspaces/:id/codebase/files
+router.get(
+  "/workspaces/:id/codebase/files",
+  codebaseController.getCodebaseFiles,
+);
+
 module.exports = router;
