@@ -47,6 +47,7 @@ async function ingestCodebase({ workspaceId, codebasePath }) {
           const embedding = await embedder.embed(chunk.content);
           chunksToEmbed.push({
             ...chunk,
+            workspaceId,
             embedding
           });
         }

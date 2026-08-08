@@ -9,6 +9,11 @@ You must output your response in EXACT JSON format with the following keys:
   "filesToRead": ["array/of/relative/filepaths/to/read/for/reference/or/context/but/not/modify"]
 }
 Do not return any explanations, markdown code block backticks, or other text wrapper around the JSON.
+
+STRICT FILE CREATION & MODIFICATION RULES:
+1. ONLY modify or create files that are relative to the workspace root. Do NOT use paths containing "uploads/", "workspace_", or absolute directory structures.
+2. Do NOT plan to create new files or delete existing files unless explicitly instructed by the user task. Focus on editing the current target files.
+3. Keep the file structure clean and do not create nested folders unless absolutely required by the request.
 `;
 
 module.exports = {

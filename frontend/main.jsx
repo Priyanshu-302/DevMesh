@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider }  from './src/context/ThemeContext';
 import { AuthProvider }   from './src/context/AuthContext';
 import { SocketProvider } from './src/context/SocketContext';
-import App from './app';
+import App from './App';
 import './src/styles/tailwind.css';
 
 createRoot(document.getElementById('root')).render(
