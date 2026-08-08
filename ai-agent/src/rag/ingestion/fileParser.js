@@ -39,7 +39,7 @@ function parseDirectory(dir, ignoreDirs = DEFAULT_IGNORE, extensions = DEFAULT_E
           const content = fs.readFileSync(filePath, 'utf8');
           results.push({
             filePath: path.resolve(filePath),
-            relativePath: path.relative(process.cwd(), filePath),
+            relativePath: path.relative(dir, filePath),
             content
           });
         } catch (error) {
