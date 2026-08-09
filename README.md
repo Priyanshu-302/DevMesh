@@ -13,7 +13,7 @@ graph TD
     User([User Prompt]) -->|Creates Task| ExpressServer[Express.js Server]
     ExpressServer -->|Triggers Pipeline| AgentOrchestrator[LangGraph Orchestrator]
     
-    subgraph AI Agent Team (LangGraph)
+    subgraph Team ["AI Agent Team (LangGraph)"]
         AgentOrchestrator -->|Plan & Design| ArchitectAgent[Architect Agent]
         ArchitectAgent -->|Output filesToChange & filesToRead| DeveloperAgent[Developer Agent]
         DeveloperAgent -->|Run Code Changes| QaAgent[QA Tester Agent]
@@ -78,6 +78,11 @@ This monorepo manages three core modules using `pnpm` workspaces:
 
 ---
 
-## 🌐 Deployment
+## 📚 Detailed Documentation
 
-For complete settings, build settings, and environmental setup for hosting in production, check out our **[Deployment Guide](file:///C:/Users/PRIYANSHU/.gemini/antigravity-ide/brain/ce285336-7634-43a1-85d3-ce9f0ee9ee41/deployment_guide.md)**.
+For exhaustive developer guides and architectural deep-dives, refer to our core documentation resources:
+
+* 🔌 **[API Reference Guide](API_DOCUMENTATION.md)**: Detailed JSON schemas, request/response models, and Socket.io event flows.
+* 🤖 **[AI Agent Graph Specifications](AGENT_ARCHITECTURE.md)**: Details on LangGraph loops, self-correction feedback algorithms, and ChromaDB workspace RAG isolation.
+* 🛠️ **[Troubleshooting & Setup Guide](TROUBLESHOOTING.md)**: Resolving MongoDB server timeouts, EADDRINUSE collisions, and Groq rate-limiting constraints.
+* 🌐 **[Vercel & Render Deployment Walkthrough](DEPLOYMENT_GUIDE.md)**: Settings, env parameters, and monorepo workspace filters for public cloud hosting.
