@@ -349,5 +349,22 @@ input, textarea, select { font-family: inherit; }
 @media (max-width: 640px) {
   /* Sidebar collapses to icon-only strip */
   :root { --sidebar-w: 0px; }
+
+  .app-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .app-sidebar.open {
+    transform: translateX(0) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  }
+
+  .mobile-sidebar-toggle {
+    display: flex !important;
+  }
+
+  .mobile-close-btn {
+    display: flex !important;
+  }
 }
 

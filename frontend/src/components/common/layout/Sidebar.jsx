@@ -6,16 +6,52 @@ const NAV_ITEMS = [
   { label: 'Profile',    path: '/profile',    icon: '👤' },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   return (
-    <aside style={{
-      position: 'fixed', top: 0, left: 0, bottom: 0,
-      width: 'var(--sidebar-w)', zIndex: 200,
-      background: 'rgba(14,14,18,0.95)',
-      borderRight: '1px solid var(--panel-border)',
-      display: 'flex', flexDirection: 'column',
-      backdropFilter: 'blur(20px)',
-    }}>
+    <>
+      {/* Mobile backdrop overlay */}
+      {isOpen && (
+        <div
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(0, 0, 0, 0.6)',
+            zIndex: 199,
+            backdropFilter: 'blur(4px)',
+          }}
+        />
+      )}
+
+      <aside
+        className={`app-sidebar ${isOpen ? 'open' : ''}`}
+        style={{
+          position: 'fixed', top: 0, left: 0, bottom: 0,
+          width: '240px', zIndex: 200,
+          background: 'rgba(14,14,18,0.98)',
+          borderRight: '1px solid var(--panel-border)',
+          display: 'flex', flexDirection: 'column',
+          backdropFilter: 'blur(20px)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflowY: 'auto',
+        }}
+      >
+        {/* Mobile Close Button */}
+        <div className="mobile-close-btn" style={{
+          display: 'none',
+          justifyContent: 'flex-end',
+          padding: '12px 16px 0',
+        }}>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none', border: 'none',
+              color: 'var(--muted)', fontSize: 24, cursor: 'pointer',
+            }}
+          >
+            ×
+          </button>
+        </div>
       {/* Logo */}
       <div style={{
         padding: '0 20px',
@@ -65,5 +101,6 @@ export default function Sidebar() {
         AI-powered dev workspace
       </div>
     </aside>
+  </>
   );
 }
