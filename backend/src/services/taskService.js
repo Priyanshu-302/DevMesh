@@ -4,6 +4,7 @@ const AgentLog = require("../models/AgentLog");
 const logger = require("../utils/logger");
 const aiAgent = require("../../../ai-agent");
 const { broadcastToTaskRoom } = require("../websocket/socketServer");
+const { getWorkspaceCodebasePath } = require("../utils/workspacePath");
 
 /**
  * Create and Execute Task
@@ -63,7 +64,7 @@ const createAndExecuteTask = async (workspaceId, requestText, parentTaskId = nul
           taskId: task._id.toString(),
           workspaceId: workspace._id.toString(),
           requestText: agentRequestText,
-          codebasePath: workspace.codebasePath,
+          codebasePath: getWorkspaceCodebasePath(workspace),
         },
         async (event) => {
           const eventType = event.type || "agent_event";
@@ -199,7 +200,7 @@ const executeFollowUpTask = async (taskId, followUpPrompt) => {
           taskId: task._id.toString(),
           workspaceId: workspace._id.toString(),
           requestText: agentRequestText,
-          codebasePath: workspace.codebasePath,
+          codebasePath: getWorkspaceCodebasePath(workspace),
         },
         async (event) => {
           const eventType = event.type || "agent_event";
