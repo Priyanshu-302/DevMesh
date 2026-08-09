@@ -40,7 +40,7 @@ export default function WorkspaceCard({ workspace, onDelete }) {
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--muted)' }}>
-          {timeAgo(workspace.createdAt)}
+          {timeAgo(workspace.updatedAt)}
         </span>
         <button
           onClick={e => { e.stopPropagation(); onDelete(workspace._id); }}
