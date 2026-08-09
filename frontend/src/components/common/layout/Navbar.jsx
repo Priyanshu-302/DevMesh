@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
 import { SocketContext } from '../../../context/SocketContext';
 
-export default function Navbar() {
+export default function Navbar({ onToggleSidebar }) {
   const { user, logout } = useContext(AuthContext);
   const { connected }    = useContext(SocketContext);
 
@@ -21,9 +21,23 @@ export default function Navbar() {
         borderLeft: '1px solid var(--panel-border)',
       }}
     >
-      {/* Left: breadcrumb placeholder */}
-      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
-        devmesh / workspace
+      {/* Left: breadcrumb + hamburger toggle */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button
+          onClick={onToggleSidebar}
+          className="mobile-sidebar-toggle"
+          style={{
+            background: 'none', border: 'none',
+            color: 'var(--steel)', fontSize: 20, cursor: 'pointer',
+            padding: '4px 8px', borderRadius: 4,
+            display: 'none', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          ☰
+        </button>
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--muted)' }}>
+          devmesh / workspace
+        </div>
       </div>
 
       {/* Right: socket status + user */}

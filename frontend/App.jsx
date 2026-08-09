@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from './src/context/AuthContext';
 import Navbar          from './src/components/common/layout/Navbar';
 import Sidebar         from './src/components/common/layout/Sidebar';
@@ -16,11 +16,12 @@ import HelpRobotChatbot from './src/components/common/HelpRobotChatbot';
 
 /* ─── Protected layout (Sidebar + Navbar) ── */
 function ProtectedLayout({ children }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div className="app-layout">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="app-main">
-        <Navbar />
+        <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
         {children}
       </div>
     </div>
