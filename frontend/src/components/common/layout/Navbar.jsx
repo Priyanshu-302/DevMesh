@@ -9,7 +9,7 @@ export default function Navbar({ onToggleSidebar }) {
 
   return (
     <nav
-      className="glass-panel"
+      className="glass-panel app-navbar"
       style={{
         position: 'fixed', top: 0, left: 'var(--sidebar-w)', right: 0,
         height: 'var(--nav-h)', zIndex: 100,
@@ -49,7 +49,7 @@ export default function Navbar({ onToggleSidebar }) {
             background: connected ? 'var(--green)' : 'var(--red)',
             animation: connected ? 'pulse 2s ease infinite' : 'none',
           }} />
-          {connected ? 'live' : 'offline'}
+          <span className="nav-ws-label">{connected ? 'live' : 'offline'}</span>
         </div>
 
         {/* User */}
@@ -63,7 +63,7 @@ export default function Navbar({ onToggleSidebar }) {
             }}>
               {(user.name || user.email || 'U')[0].toUpperCase()}
             </div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--steel)', transition: 'color 0.2s' }}
+            <span className="nav-user-email" style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--steel)', transition: 'color 0.2s' }}
                   onMouseEnter={e => e.target.style.color = 'var(--orange)'}
                   onMouseLeave={e => e.target.style.color = 'var(--steel)'}>
               {user.name || user.email}
