@@ -13,6 +13,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000", // Default React / Next.js port
   "http://localhost:5173", // Default Vite port
+  "https://dev-mesh-frontend.vercel.app", // Production Vercel URL
 ];
 
 const corsOptions = {
