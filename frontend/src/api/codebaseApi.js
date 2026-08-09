@@ -9,4 +9,6 @@ export const codebaseApi = {
     axiosClient.get(`/api/workspaces/${workspaceId}/codebase/status`),
   saveFileContent: (workspaceId, filePath, content) =>
     axiosClient.post(`/api/workspaces/${workspaceId}/codebase/file`, { filePath, content }),
+  getCodebaseFiles: (workspaceId) =>
+    axiosClient.get(`/api/workspaces/${workspaceId}/codebase/files`),
 };

@@ -50,34 +50,40 @@ export default function LiveTaskPage() {
     }
   }, [status, taskId]);
 
-  // Parse files from task finalCode
-  let files = {};
-  try {
-    if (task?.finalCode) {
-      files = JSON.parse(task.finalCode);
-    }
-  } catch (e) {
-    console.error("Failed to parse task finalCode:", e);
-  }
-  const filePaths = Object.keys(files);
+  // Fetch actual files in the workspace codebase
+  const [codebaseFiles, setCodebaseFiles] = useState({});
 
-  // Sync selected file and edited code when files load or change
+  useEffect(() => {
+    if (workspaceId) {
+      codebaseApi.getCodebaseFiles(workspaceId)
+        .then(res => {
+          if (res.data?.files) {
+            setCodebaseFiles(res.data.files);
+          }
+        })
+        .catch(err => console.error('Failed to fetch codebase files:', err));
+    }
+  }, [workspaceId, status]); // Re-fetch on workspace load, and when task status updates (e.g. finishes)
+
+  const filePaths = Object.keys(codebaseFiles);
+
+  // Sync selected file and edited code when codebase files load or change
   useEffect(() => {
     if (filePaths.length > 0) {
       if (!selectedFilePath || !filePaths.includes(selectedFilePath)) {
         setSelectedFilePath(filePaths[0]);
-        setEditedCode(files[filePaths[0]] || '');
+        setEditedCode(codebaseFiles[filePaths[0]] || '');
       }
     }
-  }, [task?.finalCode]);
+  }, [codebaseFiles]);
 
   useEffect(() => {
-    if (selectedFilePath && files[selectedFilePath]) {
-      setEditedCode(files[selectedFilePath]);
+    if (selectedFilePath && typeof codebaseFiles[selectedFilePath] !== 'undefined') {
+      setEditedCode(codebaseFiles[selectedFilePath]);
       setSaveSuccess(false);
       setSaveError(null);
     }
-  }, [selectedFilePath]);
+  }, [selectedFilePath, codebaseFiles]);
 
   const handleSaveFile = async () => {
     setSavingFile(true); setSaveError(null); setSaveSuccess(false);
@@ -86,8 +92,10 @@ export default function LiveTaskPage() {
       setSaveSuccess(true);
       
       // Update our local state representation of the files
-      files[selectedFilePath] = editedCode;
-      task.finalCode = JSON.stringify(files);
+      setCodebaseFiles(prev => ({
+        ...prev,
+        [selectedFilePath]: editedCode
+      }));
     } catch (err) {
       setSaveError(err?.response?.data?.message || err?.message || 'Failed to save changes.');
     } finally {
@@ -100,8 +108,10 @@ export default function LiveTaskPage() {
     if (!followUpPrompt.trim()) return;
     setSubmittingFollowUp(true); setFollowUpError(null);
     try {
-      const { data } = await taskApi.create(workspaceId, { requestText: followUpPrompt });
-      navigate(`/workspace/${workspaceId}/task/${data._id}`);
+      const { data } = await taskApi.createFollowUp(taskId, {
+        requestText: followUpPrompt
+      });
+      setTask(data.data || data);
       setFollowUpPrompt('');
     } catch (err) {
       setFollowUpError(err?.response?.data?.message || err?.message || 'Failed to dispatch follow-up command.');

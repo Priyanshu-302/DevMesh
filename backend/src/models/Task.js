@@ -12,6 +12,11 @@ const taskSchema = new mongoose.Schema(
       required: [true, "Request prompt/text is required"],
       trim: true,
     },
+    parentTask: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Task",
+      default: null,
+    },
     status: {
       type: String,
       enum: ["pending", "in-progress", "completed", "failed"],

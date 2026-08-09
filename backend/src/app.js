@@ -48,6 +48,11 @@ app.use(express.urlencoded({ extended: true }));
 // Serve uploaded ZIPs and extractions statically if needed
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// Ping route for keep-alive
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 // Mount API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/workspaces", workspaceRoutes);

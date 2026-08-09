@@ -11,6 +11,7 @@ const createTaskSchema = z.object({
   requestText: z
     .string()
     .min(5, "Task request text must be at least 5 characters long"),
+  parentTaskId: z.string().optional(),
 });
 
 // Protect all task endpoints
@@ -22,6 +23,13 @@ router.post(
   "/workspaces/:id/tasks",
   validateRequest(createTaskSchema),
   taskController.createTask,
+);
+
+// POST /api/tasks/:taskId/followup
+router.post(
+  "/tasks/:taskId/followup",
+  validateRequest(createTaskSchema),
+  taskController.createFollowUp,
 );
 
 // GET /api/workspaces/:id/tasks

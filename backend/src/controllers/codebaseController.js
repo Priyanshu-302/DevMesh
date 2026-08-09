@@ -124,8 +124,64 @@ const saveFileContent = asyncHandler(async (req, res) => {
   return successResponse(res, 200, "File content saved and ingestion re-triggered successfully");
 });
 
+/**
+ * Retrieve all files and their contents from the workspace codebase
+ */
+const getCodebaseFiles = asyncHandler(async (req, res) => {
+  const { id: workspaceId } = req.params;
+
+  const workspace = await Workspace.findOne({
+    _id: workspaceId,
+    owner: req.user._id,
+  });
+
+  if (!workspace) {
+    return errorResponse(res, 404, "Workspace not found");
+  }
+
+  if (!workspace.codebasePath || !fs.existsSync(workspace.codebasePath)) {
+    return successResponse(res, 200, "No files found", { files: {} });
+  }
+
+  const files = {};
+  const readDir = (dir) => {
+    const list = fs.readdirSync(dir);
+    for (const file of list) {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        if (file === "node_modules" || file === ".git" || file === "dist" || file === "build" || file === ".turbo" || file === "logs" || file === "uploads" || file === "temp") {
+          continue;
+        }
+        readDir(fullPath);
+      } else {
+        const ext = path.extname(file).toLowerCase();
+        // Skip memory state files and dot hashes files
+        if (file.startsWith("memory_") || file.startsWith(".file-hashes_")) {
+          continue;
+        }
+        // Only load supported text extensions
+        const supported = ['.js', '.jsx', '.ts', '.tsx', '.json', '.md', '.css', '.html', '.cpp', '.h', '.py', '.cs', '.java'];
+        if (supported.includes(ext)) {
+          const rel = path.relative(workspace.codebasePath, fullPath).replace(/\\/g, '/');
+          files[rel] = fs.readFileSync(fullPath, "utf8");
+        }
+      }
+    }
+  };
+
+  try {
+    readDir(workspace.codebasePath);
+  } catch (err) {
+    return errorResponse(res, 500, "Failed to read codebase files", err.message);
+  }
+
+  return successResponse(res, 200, "Codebase files retrieved successfully", { files });
+});
+
 module.exports = {
   uploadCodebase,
   getIngestionStatus,
   saveFileContent,
+  getCodebaseFiles,
 };

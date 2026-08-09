@@ -41,7 +41,7 @@ async function ingestCodebase({ workspaceId, codebasePath }) {
       if (changed) {
         logger.info('INGESTION_FILTER', `File changed or untracked: ${file.relativePath}`);
 
-        const fileChunks = chunkFile(file.filePath, file.content);
+        const fileChunks = chunkFile(file.relativePath, file.content);
 
         for (const chunk of fileChunks) {
           const embedding = await embedder.embed(chunk.content);

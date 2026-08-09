@@ -105,10 +105,19 @@ export function useTaskSocket(taskId, initialStatus) {
     });
     socket.on(TASK_EVENTS.TASK_COMPLETED, () => { setStatus('completed'); push('system', 'Task complete.'); });
     socket.on(TASK_EVENTS.TASK_FAILED,    () => { setStatus('failed');    push('system', 'Task failed.'); });
+    
+    socket.on('task_status_updated', (data) => {
+      setStatus(data.status);
+      if (data.status === 'in-progress' || data.status === 'pending') {
+        setLogs([]);
+        setQaResult(null);
+        setRetryCount(0);
+      }
+    });
 
     return () => {
       taskSocket.leaveTaskRoom(taskId);
-      Object.values(TASK_EVENTS).forEach(ev => socket.off(ev));
+      Object.values(TASK_EVENTS).concat(['task_status_updated']).forEach(ev => socket.off(ev));
     };
   }, [socket, taskId]);
 
