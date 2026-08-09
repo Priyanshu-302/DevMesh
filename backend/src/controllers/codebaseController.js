@@ -3,6 +3,7 @@ const codebaseIngestionService = require("../services/codebaseIngestionService")
 const Workspace = require("../models/Workspace");
 const asyncHandler = require("../utils/asyncHandler");
 const { successResponse, errorResponse } = require("../utils/apiResponse");
+const { getWorkspaceCodebasePath } = require("../utils/workspacePath");
 
 /**
  * Upload codebase zip file to workspace
@@ -94,14 +95,15 @@ const saveFileContent = asyncHandler(async (req, res) => {
     return errorResponse(res, 404, "Workspace not found");
   }
 
-  if (!workspace.codebasePath) {
-    return errorResponse(res, 400, "No codebase associated with this workspace");
+  const codebasePath = getWorkspaceCodebasePath(workspace);
+  if (!codebasePath || !fs.existsSync(codebasePath)) {
+    return errorResponse(res, 400, "Workspace codebase is not initialized");
   }
 
-  // Resolve safe file path and prevent directory traversal
-  const resolvedPath = path.resolve(workspace.codebasePath, filePath);
-  if (!resolvedPath.startsWith(path.resolve(workspace.codebasePath))) {
-    return errorResponse(res, 403, "Access denied: Path traversal detected");
+  // Prevent path traversal
+  const resolvedPath = path.resolve(codebasePath, filePath);
+  if (!resolvedPath.startsWith(path.resolve(codebasePath))) {
+    return errorResponse(res, 400, "Invalid file path (Path traversal blocked)");
   }
 
   // Write file content
@@ -139,7 +141,8 @@ const getCodebaseFiles = asyncHandler(async (req, res) => {
     return errorResponse(res, 404, "Workspace not found");
   }
 
-  if (!workspace.codebasePath || !fs.existsSync(workspace.codebasePath)) {
+  const codebasePath = getWorkspaceCodebasePath(workspace);
+  if (!codebasePath || !fs.existsSync(codebasePath)) {
     return successResponse(res, 200, "No files found", { files: {} });
   }
 
@@ -163,7 +166,7 @@ const getCodebaseFiles = asyncHandler(async (req, res) => {
         // Only load supported text extensions
         const supported = ['.js', '.jsx', '.ts', '.tsx', '.json', '.md', '.css', '.html', '.cpp', '.h', '.py', '.cs', '.java'];
         if (supported.includes(ext)) {
-          const rel = path.relative(workspace.codebasePath, fullPath).replace(/\\/g, '/');
+          const rel = path.relative(codebasePath, fullPath).replace(/\\/g, '/');
           files[rel] = fs.readFileSync(fullPath, "utf8");
         }
       }
@@ -171,7 +174,7 @@ const getCodebaseFiles = asyncHandler(async (req, res) => {
   };
 
   try {
-    readDir(workspace.codebasePath);
+    readDir(codebasePath);
   } catch (err) {
     return errorResponse(res, 500, "Failed to read codebase files", err.message);
   }

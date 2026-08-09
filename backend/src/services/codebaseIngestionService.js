@@ -1,6 +1,7 @@
 const Workspace = require("../models/Workspace");
 const logger = require("../utils/logger");
 const aiAgent = require("../../../ai-agent");
+const { getWorkspaceCodebasePath } = require("../utils/workspacePath");
 
 // Triggers the background ingestion codebase via ai agent
 const triggerCodebaseIngestion = async (workspaceId) => {
@@ -37,7 +38,7 @@ const triggerCodebaseIngestion = async (workspaceId) => {
 
       await aiAgent.ingestCodebase({
         workspaceId: workspace._id.toString(),
-        codebasePath: workspace.codebasePath,
+        codebasePath: getWorkspaceCodebasePath(workspace),
       });
 
       workspace.ingestionStatus = "completed";
