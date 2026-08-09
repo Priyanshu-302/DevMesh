@@ -366,6 +366,18 @@ input, textarea, select { font-family: inherit; }
   .mobile-close-btn {
     display: flex !important;
   }
+
+  .app-navbar {
+    padding: 0 12px !important;
+  }
+
+  .nav-ws-label {
+    display: none !important;
+  }
+
+  .nav-user-email {
+    display: none !important;
+  }
 }
 
 /* ─── App Pages Responsive Layouts ─────────────────── */
