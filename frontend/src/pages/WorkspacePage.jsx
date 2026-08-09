@@ -162,7 +162,7 @@ export default function WorkspacePage() {
                         {task.requestText ? (task.requestText.length > 60 ? task.requestText.substring(0, 57) + '...' : task.requestText) : 'Task'}
                       </div>
                       <div style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--muted)' }}>
-                        {timeAgo(task.createdAt)}
+                        {timeAgo(task.updatedAt)}
                       </div>
                     </div>
                     <StatusBadge status={task.status} />
