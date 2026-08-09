@@ -141,12 +141,12 @@ export default function LiveTaskPage() {
       </div>
 
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24 }}>
+      <div className="task-header-row" style={{ gap:20, marginBottom:16 }}>
         <div>
-          <h1 className="font-display" style={{ fontSize:22, fontWeight:800, textTransform:'uppercase', lineHeight:1.1 }}>
-            {task?.requestText ? (task.requestText.length > 50 ? task.requestText.substring(0, 47) + '...' : task.requestText) : 'Live Task'}
+          <h1 className="font-display" style={{ fontSize:22, fontWeight:800, textTransform:'uppercase', letterSpacing:1 }}>
+            Live Task Session
           </h1>
-          {task?.requestText && (
+          {task && (
             <p style={{ color:'var(--muted)', fontSize:13, marginTop:6, maxWidth:600, fontFamily:'var(--font-mono)' }}>
               Prompt: {task.requestText}
             </p>
@@ -167,7 +167,7 @@ export default function LiveTaskPage() {
       </div>
 
       {/* 2-col grid: Chat + Input | Diff or Editor */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:20, marginBottom:20 }}>
+      <div className="task-page-grid" style={{ marginBottom:20 }}>
         <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
           <AgentChatFeed logs={displayLogs} isRunning={isRunning} />
           

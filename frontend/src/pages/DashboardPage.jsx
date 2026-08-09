@@ -28,7 +28,7 @@ export default function DashboardPage() {
   return (
     <div className="page-content">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 36 }}>
+      <div className="task-header-row" style={{ gap: 20, marginBottom: 36 }}>
         <div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, textTransform: 'uppercase', letterSpacing: 3, color: 'var(--orange)', marginBottom: 8 }}>
             Dashboard
@@ -65,7 +65,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+      <div className="workspace-grid">
         {workspaces.map(ws => (
           <WorkspaceCard key={ws._id} workspace={ws} onDelete={removeWorkspace} />
         ))}
