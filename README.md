@@ -1,159 +1,83 @@
-# Turborepo starter
+# 🚀 DevMesh: AI-Agentic Software Development Platform
 
-This Turborepo starter is maintained by the Turborepo core team.
+DevMesh is a next-generation, multi-agent software engineering workspace. It leverages collaborative AI agents (Architect, Developer, and QA Tester) operating in a structured LangGraph workflow to ingest codebases, plan implementations, write optimal code, and perform automated compiler/lint validation audits.
 
-## Using this example
+---
 
-Run the following command:
+## 🏗️ System Architecture
 
-```sh
-npx create-turbo@latest
+DevMesh is built as a highly optimized, high-performance monorepo:
+
+```mermaid
+graph TD
+    User([User Prompt]) -->|Creates Task| ExpressServer[Express.js Server]
+    ExpressServer -->|Triggers Pipeline| AgentOrchestrator[LangGraph Orchestrator]
+    
+    subgraph AI Agent Team (LangGraph)
+        AgentOrchestrator -->|Plan & Design| ArchitectAgent[Architect Agent]
+        ArchitectAgent -->|Output filesToChange & filesToRead| DeveloperAgent[Developer Agent]
+        DeveloperAgent -->|Run Code Changes| QaAgent[QA Tester Agent]
+        QaAgent -->|Compiler/Tests Auditing| DevMeshAudit{Audit Verdict}
+        DevMeshAudit -->|Failed: Retries with Feedback| DeveloperAgent
+        DevMeshAudit -->|Passed| Complete[Task Completed]
+    end
+
+    ChromaDB[(ChromaDB Vector Store)] <-->|Workspace Scoped RAG| ArchitectAgent
+    Complete -->|Sync Final Files to Disk| CodebaseDir[Workspace Uploads Folder]
+    CodebaseDir -->|Real-time Ingestion & File Updates| ChromaDB
+    ExpressServer <-->|Real-time Socket.io Logs| ReactFrontend[React/Vite Dashboard]
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 📦 Monorepo Modules
 
-### Apps and Packages
+This monorepo manages three core modules using `pnpm` workspaces:
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+* **[frontend](file:///f:/Final%20Year%20Project/DevMesh/frontend)**: A React SPA dashboard styled with vanilla CSS. Contains real-time agent flow visualizations, a line-by-line diff viewer, a full-featured Code Editor, and editable user profiles.
+* **[backend](file:///f:/Final%20Year%20Project/DevMesh/backend)**: An Express.js REST API and WebSocket (Socket.io) server. Handles user authentication, workspace codebase storage, file writes, and background agent task dispatching.
+* **[ai-agent](file:///f:/Final%20Year%20Project/DevMesh/ai-agent)**: The AI engine powered by Groq and LangGraph. Contains RAG vector store chunking/indexing, and code generation/auditing graphs.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+---
 
-### Utilities
+## ✨ Core Features
 
-This Turborepo has some additional tools already setup for you:
+* **Workspace-Scoped RAG Ingestion**: Automatically chunks and embeds uploaded workspace ZIP codebases into ChromaDB. Searches are strictly filtered by `workspaceId` to prevent cross-project file leakage.
+* **In-Place Conversational Follow-up**: Submitting prompts inside an active task resets the agent pipeline in-place. The agent reads the conversation history and updates target files directly without creating redundant task records.
+* **Pro Code Editor Tab**: A file explorer dropdown and editor panel allowing users to inspect, edit, and save any codebase file on disk at any time, instantly re-triggering RAG updates.
+* **Automated QA Audit Reports**: Renders rich LLM-generated markdown diagnostic reports andGlowing tech-style badges instead of plain emoji stubs.
+* **Render Keep-Alive Pinging**: The server automatically pings its own public URL every 10 minutes when hosted on Render to prevent cold shutdowns on free tiers.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+---
 
-### Build
+## 🛠️ Quick Start
 
-To build all apps and packages, run the following command:
+### Prerequisites
+* **Node.js** (v18+)
+* **PNPM** (v8+)
+* **MongoDB** (Local or Atlas)
+* **Groq API Key** (for agent completions)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### Setup & Run
+1. Install all monorepo dependencies from the root:
+   ```bash
+   pnpm install
+   ```
 
-```sh
-cd my-turborepo
-turbo build
-```
+2. Configure environment files:
+   * **Backend**: Create `backend/.env` (see `backend/.env.example`)
+   * **Frontend**: Create `frontend/.env` (see `frontend/.env`)
+   * **AI Agent**: Create `ai-agent/.env` (see `ai-agent/.env.example`)
 
-Without global `turbo`, use your package manager:
+3. Boot up the backend and frontend dev servers concurrently:
+   ```bash
+   pnpm dev
+   ```
+   * Frontend runs at `http://localhost:5173`
+   * Backend runs at `http://localhost:5000`
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
-```
+---
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 🌐 Deployment
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+For complete settings, build settings, and environmental setup for hosting in production, check out our **[Deployment Guide](file:///C:/Users/PRIYANSHU/.gemini/antigravity-ide/brain/ce285336-7634-43a1-85d3-ce9f0ee9ee41/deployment_guide.md)**.
