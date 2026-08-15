@@ -11,7 +11,7 @@ async function callWithRetry(apiParams) {
 
   while (attempt < MAX_RETRIES) {
     try {
-      const model = apiParams.model || process.env.GROQ_MODEL || 'qwen/qwen3.6-27b';
+      const model = apiParams.model || process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
       
       const response = await groq.chat.completions.create({
         model,
