@@ -11,7 +11,7 @@ async function callWithRetry(apiParams) {
 
   while (attempt < MAX_RETRIES) {
     try {
-      const model = apiParams.model || process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+      const model = apiParams.model || process.env.GROQ_MODEL || 'qwen/qwen3.6-27b';
       
       const response = await groq.chat.completions.create({
         model,
